@@ -17,7 +17,7 @@ def generate_mesh(rects, h, K):
 
     return mesh
 
-def model(mesh, wavenum):
+def model(mesh, k):
     # Separation into finite elements
     mfu = gf.MeshFem(mesh, 1)
 
@@ -28,18 +28,27 @@ def model(mesh, wavenum):
     mim = gf.MeshIm(mesh, pow(elements_degree, 2))
 
     # Model
-    md = gf.Model("real")
+    md = gf.Model("complex")
     md.add_fem_variable("u", mfu)
 
     # Laplacian term of the equation
     md.add_Laplacian_brick(mim, "u")
 
-    # Eigenvalue term of the equation
-    md.add_Helmholtz_brick(mim, "u", wavenum)
+    md.add_fem_data("k", mfu)
+
+    # # Eigenvalue term of the equation
+    md.add_Helmholtz_brick(mim, "u", "k")
+
+    # Poisson equation (for testing)
+    # F = 1
+    # md.add_fem_data("F", mfu)
+    # md.set_variable("F", np.repeat(F, mfu.nbdof()))
+    # md.add_source_term_brick(mim, "u", "F")
 
     # Dirichlet boundary conditions
     md.add_Dirichlet_condition_with_multipliers(mim, "u", (elements_degree - 1), 1)
 
+    md.display()
     # Solve the model
     md.solve()
 

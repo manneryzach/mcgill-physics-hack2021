@@ -9,6 +9,9 @@ from fem_solver import *
 # L shaped
 rects = [ [ [0.,0.], [1.,1.] ], [ [0.,1.], [2.,2.] ] ]
 
+# Square
+# rects = [ [ [0.,0.], [1.,1.] ] ]
+
 mesh1 = generate_mesh(rects, 0.1, 1)
 
 mfu = gf.MeshFem(mesh1, 1)
@@ -17,11 +20,11 @@ mfu = gf.MeshFem(mesh1, 1)
 elements_degree = 2
 mfu.set_classical_fem(elements_degree)
 
-U = model(mesh1, 2.)
+U = model(mesh1, 1)
 print(U)
 
 sl = gf.Slice(("none",), mesh1, 1)
-sl.export_to_vtk('sl.vtk', "ascii")
+sl.export_to_vtk('sl.vtk', "ascii", mfu, np.real(U), "U")
 
 
 
