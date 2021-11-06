@@ -4,7 +4,7 @@ import numpy as np
 def generate_mesh(rects, h, K):
     # rects is array or [[bottom corner coords], [top corner coords]]
     union = gf.MesherObject("rectangle", rects[0][0], rects[0][1])
-    for i in range(1, len(rects) - 1):
+    for i in range(1, len(rects)):
         temp_rect = gf.MesherObject("rectangle", rects[i][0], rects[i][1])
         union = gf.MesherObject('union', union, temp_rect)
 
@@ -31,7 +31,7 @@ def model(mesh, wavenum):
     md = gf.Model("real")
     md.add_fem_variable("u", mfu)
 
-    # Laplacian term of Helmholtz equation
+    # Laplacian term of the equation
     md.add_Laplacian_brick(mim, "u")
 
     # Eigenvalue term of the equation
