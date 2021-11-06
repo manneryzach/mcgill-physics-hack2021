@@ -36,7 +36,7 @@ class Grid:
         for currentY in range(0, self.gridHeight, self.squareWidth):
             for currentX in range(0, gridWidth, self.squareWidth):
                 self.gridArr[int(currentY / self.squareWidth)][int(currentX / self.squareWidth)] = GridSquare(currentX, currentY,
-                                                                                              self.squareWidth, red, 1)
+                                                                                              self.squareWidth, white, 1)
                 self.gridArr[int(currentY / self.squareWidth)][int(currentX / self.squareWidth)].display()
 
         # Draw horizontal grid lines.
@@ -85,6 +85,7 @@ while run_me:
     # Display Grid
     squareWidth = 20
     myGrid = Grid(grid, gridWidth, gridHeight, squareWidth)
+    myGrid.display()
 
 
     # Display everything
