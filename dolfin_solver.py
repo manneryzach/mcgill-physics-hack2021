@@ -1,6 +1,7 @@
 from dolfin import *
 from dolfin.cpp.mesh import *
 import scipy
+import numpy as np
 from ufl import inner, grad, dx
 
 test_points = [ [0.,0.], [1.,0.], [1.,1.], [0.,1.], [0.,0.]]
@@ -27,7 +28,11 @@ def eigenvalue_solver(mesh):
     V = FunctionSpace(mesh, 'Lagrange', 1)
 
     # Boundary conditions
-    boundary = BoundaryMesh(mesh)
+    boundary_mesh = BoundaryMesh(mesh, "exterior")
+
+    def boundary(x, on_boundary):
+        return on_boundary
+
     bc = DirichletBC(V, 0, boundary)
 
     # Test/Trial functions
@@ -40,7 +45,7 @@ def eigenvalue_solver(mesh):
     dummy = inner(1., v) * dx
 
     # Assemble system
-    asm = SystemAssembler(b, dummy, bcs)
+    asm = SystemAssembler(b, dummy, bc)
     B = PETScMatrix()
     asm.assemble(B)
 
@@ -48,22 +53,36 @@ def eigenvalue_solver(mesh):
 
     A = PETScMatrix()
     assemble(a, tensor=A)
+    dummy_vec = assemble(dummy)
 
-    for bc in bcs:
-        bc.zero(A)
-        bc.zero_columns(A, dummy_vec, diag_values)
+    bc.zero(A)
+    bc.zero_columns(A, dummy_vec, diag_value)
 
 
-    # Scipy solve the eigenvalue equation
-    A_array = scipy.sparse.csr_matrix(A.mat().getValuesCSR()[::-1])
-    B_array = scipy.sparse.csr_matrix(B.mat().getValuesCSR()[::-1])
+    # Solve
+    solver = SLEPcEigenSolver(A, B)
 
-    k = 20
-    which = 'SM'
-    w, v = scipy.linalg.eigh(A_array, B_array, k=k, which=which)
+    solver.parameters['solver'] = 'krylov-schur'
+    solver.parameters['spectrum'] = 'smallest magnitude'
+    solver.parameters['problem_type'] = 'gen_hermitian'
+    solver.parameters['tolerance'] = 1e-4
 
-    return w
+    n_eig = 20
+    solver.solve(n_eig)
 
-eigeinvals = eigenvalue_solver(testmesh)
+    w, v = [], []
+
+    for i in range(solver.get_number_converged()):
+        r, _, rv, _ = solver.get_eigenpair(i)
+        w.append(r)
+        v.append(rv)
+
+    w = np.array(w)
+    v = np.array(v).T
+
+    return w, v
+
+eigenvals, v = eigenvalue_solver(testmesh)
 print(eigenvals)
+print(v)
 
