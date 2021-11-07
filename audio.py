@@ -1,6 +1,14 @@
 import pyaudio
 import numpy as np
 
+
+def frequency(eingenvalue, speed_sound = 300): 
+
+    frequency  = speed_sound * (eingenvalue)**(1/2)/(np.pi*2)
+
+    return frequency
+
+
 def play_sound(volume, sampling_rate, duration, freq) : 
 
     p = pyaudio.PyAudio()
@@ -14,5 +22,5 @@ def play_sound(volume, sampling_rate, duration, freq) :
     stream.stop_stream()
     stream.close()
 
-play_sound(0.25, 44100, 1.0, 440.0)
+
 
