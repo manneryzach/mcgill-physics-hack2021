@@ -4,7 +4,7 @@ import numpy as np
 
 def frequency(eingenvalue, speed_sound = 300): 
 
-    frequency  = speed_sound * (eingenvalue)**(1/2)/(np.pi*2)
+    frequency  = speed_sound*800*(eingenvalue)**(1/2)/(np.pi*2)
 
     return frequency
 
