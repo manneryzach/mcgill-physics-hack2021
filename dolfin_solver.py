@@ -2,6 +2,7 @@ from dolfin import *
 from dolfin.cpp.mesh import *
 import scipy
 import numpy as np
+import matplotlib.pyplot as plt
 from ufl import inner, grad, dx
 
 test_points = [ [0.,0.], [1.,0.], [1.,1.], [0.,1.], [0.,0.]]
@@ -23,7 +24,7 @@ ly = 0.1
 lz = 1.0
 testmesh = UnitSquareMesh(100,100)
 
-def eigenvalue_solver(mesh):
+def eigenpair_solver(mesh):
     # Function space
     V = FunctionSpace(mesh, 'Lagrange', 1)
 
@@ -65,24 +66,38 @@ def eigenvalue_solver(mesh):
     solver.parameters['solver'] = 'krylov-schur'
     solver.parameters['spectrum'] = 'smallest magnitude'
     solver.parameters['problem_type'] = 'gen_hermitian'
-    solver.parameters['tolerance'] = 1e-4
+    solver.parameters['tolerance'] = 1e-10
 
     n_eig = 20
     solver.solve(n_eig)
 
     w, v = [], []
 
+    u = Function(V)
     for i in range(solver.get_number_converged()):
         r, _, rv, _ = solver.get_eigenpair(i)
         w.append(r)
-        v.append(rv)
+
+        u.vector()[:] = rv
+
+        plot(u)
+        plt.show()
+
+        v.append(u)
+        print(u)
+
 
     w = np.array(w)
-    v = np.array(v).T
+    v = np.array(u)
 
     return w, v
 
-eigenvals, v = eigenvalue_solver(testmesh)
+eigenvals, v = eigenpair_solver(testmesh)
 print(eigenvals)
 print(v)
+
+# import matplotlib.pyplot as plt
+
+# plt.plot(v[0])
+# plt.show()
 
