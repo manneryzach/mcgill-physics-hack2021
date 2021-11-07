@@ -22,5 +22,5 @@ def play_sound(volume, sampling_rate, duration, freq) :
     stream.stop_stream()
     stream.close()
 
-play_sound(0.25, 44100, 1.0, 440.0)
+
 
