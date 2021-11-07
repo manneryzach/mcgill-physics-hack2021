@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from ufl import inner, grad, dx
 
 from dolfin_solver import *
+from strike_drum import *
 
 # Carre
 # test_points = [ [0.,0.], [1.,0.], [1.,1.], [0.,1.], [0.,0.]]
@@ -45,33 +46,7 @@ def boundary(x, on_boundary):
 
 bc = DirichletBC(V, 0, boundary)
 
-w = Function(V)
-w.vector()[:] = 0
-
-xyz = V.tabulate_dof_coordinates()
-x = xyz[:,0]
-y = xyz[:,1]
-
-mesh_points = []
-
-It_mesh = vertices(testmesh)
-for c in It_mesh:
-    mesh_points.append(c.point().x())
-
-dof_points = V.dofmap().dofs()
-
-print(dof_points)
-print(mesh_points)
-
-# w.set_local()
-
-l = w.vector()
-l[[1500]] = 1
-l.get_local()
-w.vector()[:]=(l)
-
-plot(w)
-plt.show()
+strike_drum([0.25, 0.75], testmesh, v, eigenvals, 3)
 
 # for i in range(0, 25):
 #     plt.subplot(5, 5, i+1)

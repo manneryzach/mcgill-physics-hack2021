@@ -2,6 +2,8 @@ import pygame, sys
 from dolfin import *
 import matplotlib.pyplot as plt
 from pygame.locals import *
+from audio import *
+from strike_drum import strike_drum
 
 import dolfin_solver as dfs
 
@@ -264,22 +266,36 @@ eigenvals, v = dfs.eigenpair_solver(testmesh, 100)
 
 qquit = False
 while (not qquit):
-    uinput = input("What eigenfunction would you like? (0-99)\n Anything else to quit! \n")
-    print(type(uinput))
+    uinput = input("What eigenfunction would you like? (0-99)\na to animate, q to quit \n")
 
-    try:
-        uinput = int(uinput)
+    if (uinput == "a"):
+        strike_drum(impulsePosition, testmesh, v, eigenvals, 3)
+    if (uinpput == "q"):
+        qquit = True
+    else:
+        try:
+            uinput = int(uinput)
 
-        if (0 <= uinput <= 99):
+            if (0 <= uinput <= 99):
 
-            plot(v[uinput])
-            print("The Eigenvalue is : ", eigenvals[uinput])
+                plot(v[uinput])
 
-            plt.show()
+                t_eig_val = eigenvals[uinput]
 
-        else:
+                print("The Eigenvalue is : ", t_eig_val)
+
+                freq = frequency(t_eig_val)
+                print("The harmonic frequency is : ", freq)
+
+                plt.title(str(round(freq, 2)) + "Hz")
+
+                plt.show()
+
+                play_sound(0.5, 44100, 3, freq)
+
+            else:
+                print("Bad input")
+
+        except:
             print("Bad input")
-
-    except:
-        print("Bad input")
 
