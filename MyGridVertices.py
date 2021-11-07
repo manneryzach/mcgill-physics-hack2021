@@ -170,7 +170,7 @@ def closeShape(x, y):
 
 # Returns correctly formatted output: List of (x,y) coordinates of all points
 def output(pointList):
-    output = [[float(point.x), (gridHeight - point.y)] for point in pointList]
+    output = [[float(gridWidth - point.x), (point.y)] for point in pointList]
     outputInt = [Point(int(coordinates[0]), int(coordinates[1])) for coordinates in output]
     if (orientation(outputInt[0], outputInt[1], outputInt[2]) == 2):
         return output
