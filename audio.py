@@ -12,7 +12,7 @@ def frequency(eingenvalue, speed_sound = 300):
 
 def play_sound(volume, sampling_rate, duration, freq) : 
 
-    if freq == 90 : 
+    if (2000 < freq < 2100) : 
 
         file = 'therock.mp3'
         mixer.init()
