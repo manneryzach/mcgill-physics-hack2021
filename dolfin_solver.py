@@ -1,18 +1,17 @@
 from dolfin import *
-from dolfin.cpp.mesh import *
-import scipy
+from mshr import *
 import numpy as np
-import matplotlib.pyplot as plt
 from ufl import inner, grad, dx
 
-def generate_mesh(coords):
+def generate_mesh_from_coords(coords, resolution):
 
     # convert array of coords to Dolfin point types
     points = []
     for coord in coords:
         points.append(Point(coord[0], coord[1]))
 
-    PolygonalMeshGenerator.generate(mesh, domain_vertices, 0.1)
+    domain = Polygon(points)
+    mesh = generate_mesh(domain, resolution)
 
     return mesh
 
