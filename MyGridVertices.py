@@ -197,15 +197,17 @@ pygame.display.set_caption("Grid")
 points = []
 lines = []
 
-shape_out = []
+shapeOut = []
+impulsePosition = []
 
 def programLoop():
-    global shape_out
-    fps_limit = 60
-    run_me = True
-    while run_me:
+    global shapeOut
+    global impulsePosition
+    fpsLimit = 60
+    runMe = True
+    while runMe:
         # Limit the framerate
-        clock.tick(fps_limit)
+        clock.tick(fpsLimit)
 
         # Clear the grid by filling all white
         if (len(points) == 0):
@@ -219,8 +221,15 @@ def programLoop():
                     closeShape(points[0].x, points[0].y)
                     if (numOfPoints == len(points)):
                         continue
-                    shape_out = output(points)
-                    run_me = False
+                    waiting = True
+                    while (waiting):
+                        event = pygame.event.wait()
+                        if (event.type == MOUSEBUTTONDOWN):
+                            x, y = pygame.mouse.get_pos()
+                            waiting = False
+                    impulsePosition = [x, y]
+                    shapeOut = output(points)
+                    runMe = False
             if event.type == MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 continueShape(x, y)
@@ -232,7 +241,7 @@ def programLoop():
 
                 # Final output, must decide what to do with it
                 output(points)
-                run_me = False
+                runMe = False
 
         # Display everything
         pygame.display.flip()
@@ -244,9 +253,10 @@ programLoop()
 # Quit the display
 pygame.quit()
 
-print(shape_out)
+print(shapeOut)
+print(impulsePosition)
 
-testmesh = dfs.generate_mesh_from_coords(shape_out, 50)
+testmesh = dfs.generate_mesh_from_coords(shapeOut, 50)
 plot(testmesh)
 plt.show()
 
