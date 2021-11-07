@@ -229,7 +229,7 @@ def programLoop():
                         if (event.type == MOUSEBUTTONDOWN):
                             x, y = pygame.mouse.get_pos()
                             waiting = False
-                    impulsePosition = [float(gridWidth - x), float(gridHeight - y)]
+                    impulsePosition = [float(x), float(gridHeight - y)]
                     shapeOut = output(points)
                     runMe = False
             if event.type == MOUSEBUTTONDOWN:
