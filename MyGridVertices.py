@@ -219,9 +219,9 @@ def programLoop():
         # Display everything
         pygame.display.flip()
 
-programLoop()
+# programLoop()
 
 
 # Quit the display
-pygame.quit()
-sys.exit()
+# pygame.quit()
+# sys.exit()
