@@ -270,7 +270,7 @@ while (not qquit):
 
     if (uinput == "a"):
         strike_drum(impulsePosition, testmesh, v, eigenvals, 3)
-    if (uinpput == "q"):
+    elif (uinput == "q"):
         qquit = True
     else:
         try:
