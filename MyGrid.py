@@ -1,6 +1,6 @@
-import pygame
+import pygame, sys
 from pygame.locals import *
-from pygame.draw import *
+import math
 
 # Color definitions
 black = 0, 0, 0
@@ -30,6 +30,17 @@ class Grid:
         self.numRows = int(gridHeight / squareWidth)
         self.grid = grid
         self.gridArr = [[0 for i in range(self.numCols)] for j in range(self.numRows)]
+
+    def select(self, x, y):
+        xIndex = math.floor(x / squareWidth)
+        yIndex = math.floor(y / squareWidth)
+        print(type(self.gridArr[yIndex][xIndex]))
+        self.gridArr[yIndex][xIndex].changeColor(red)
+
+    def update(self):
+        for currentY in range(0, self.gridHeight, self.squareWidth):
+            for currentX in range(0, gridWidth, self.squareWidth):
+                self.gridArr[int(currentY / self.squareWidth)][int(currentX / self.squareWidth)].display()
 
     def display(self):
         # Fill grid with square objects. Always divide by squareWidth for indices of list
@@ -63,6 +74,11 @@ class GridSquare:
     def display(self):
         pygame.draw.polygon(grid, self.color, [(self.x, self.y), (self.x + self.size, self.y), (self.x + self.size, self.y + self.size), (self.x, self.y + self.size)], width=0)
 
+    def changeColor(self, color):
+        self.color = color
+
+
+
 testSquare = GridSquare(0, 20, 10, black, 1)
 
 # Defining variables for fps and continued running
@@ -72,20 +88,23 @@ while run_me:
     # Limit the framerate
     clock.tick(fps_limit)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run_me = False
-
     # Clear the screen by filling all white
     grid.fill(white)
-
-    testSquare.display()
-
 
     # Display Grid
     squareWidth = 20
     myGrid = Grid(grid, gridWidth, gridHeight, squareWidth)
     myGrid.display()
+
+    for event in pygame.event.get():
+        if event.type == MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            print(x)
+            print(y)
+            myGrid.select(x, y)
+            myGrid.update()
+        if event.type == pygame.QUIT:
+            run_me = False
 
 
     # Display everything
@@ -94,3 +113,4 @@ while run_me:
 
 # Quit the display
 pygame.quit()
+sys.exit()

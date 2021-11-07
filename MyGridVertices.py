@@ -213,6 +213,10 @@ def programLoop():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
+                    numOfPoints = len(points)
+                    closeShape(points[0].x, points[0].y)
+                    if (numOfPoints == len(points)):
+                        continue
                     shape_out = output(points)
                     run_me = False
             if event.type == MOUSEBUTTONDOWN:
