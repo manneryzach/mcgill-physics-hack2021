@@ -1,5 +1,9 @@
 import pygame, sys
+from dolfin import *
+import matplotlib.pyplot as plt
 from pygame.locals import *
+
+import dolfin_solver as dfs
 
 # Point and Line class definitions
 class Point:
@@ -164,7 +168,8 @@ def closeShape(x, y):
 
 # Returns correctly formatted output: List of (x,y) coordinates of all points
 def output(pointList):
-    pointListReversed = pointList[::-1]
+    # pointListReversed = pointList[::-1]
+    pointListReversed = pointList[::]
     output = [[float(point.x), float(point.y)] for point in pointListReversed]
     return output
 
@@ -190,7 +195,10 @@ pygame.display.set_caption("Grid")
 points = []
 lines = []
 
+shape_out = []
+
 def programLoop():
+    global shape_out
     fps_limit = 60
     run_me = True
     while run_me:
@@ -203,6 +211,10 @@ def programLoop():
 
         # Event handler
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    shape_out = output(points)
+                    run_me = False
             if event.type == MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 continueShape(x, y)
@@ -219,9 +231,39 @@ def programLoop():
         # Display everything
         pygame.display.flip()
 
-# programLoop()
+
+programLoop()
 
 
 # Quit the display
-# pygame.quit()
-# sys.exit()
+pygame.quit()
+
+print(shape_out)
+
+testmesh = dfs.generate_mesh_from_coords(shape_out, 50)
+plot(testmesh)
+plt.show()
+
+eigenvals, v = dfs.eigenpair_solver(testmesh, 100)
+
+qquit = False
+while (not qquit):
+    uinput = input("What eigenfunction would you like? (0-99)\n Anything else to quit! \n")
+    print(type(uinput))
+
+    try:
+        uinput = int(uinput)
+
+        if (0 <= uinput <= 99):
+
+            plot(v[uinput])
+            print("The Eigenvalue is : ", eigenvals[uinput])
+
+            plt.show()
+
+        else:
+            print("Bad input")
+
+    except:
+        print("Bad input")
+
