@@ -170,7 +170,7 @@ def closeShape(x, y):
 def output(pointList):
     # pointListReversed = pointList[::-1]
     pointListReversed = pointList[::]
-    output = [[float(gridWidth - point.x), (gridHeight - point.y)] for point in pointListReversed]
+    output = [[float(point.x), (gridHeight - point.y)] for point in pointListReversed]
     return output
 
 # Color definitions
